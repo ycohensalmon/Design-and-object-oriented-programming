@@ -1,53 +1,55 @@
 import java.util.*;
 import java.util.stream.Collectors;
 
-
-public class AgglomerativeClustering <T extends Clusterable<T>> implements Clustering<T>{
+public class AgglomerativeClustering<T extends Clusterable<T>> implements Clustering<T> {
 	double threshold;
+
 	public AgglomerativeClustering(double threshold) {
 		this.threshold = threshold;
 	}
+
+	@Override
 	public Set<Set<T>> clusterSet(Set<T> elements) {
+		// Initialisation des clusters
 		Set<Set<T>> clusters = elements.stream()
-				.map(e -> {
-					Set<T> singleton = new HashSet<>();
-					singleton.add(e);
-					return singleton;
-				})
+				.map(Collections::singleton)
 				.collect(Collectors.toSet());
 
 		while (clusters.size() > 1) {
-			List<AbstractMap.SimpleEntry<Set<T>, Set<T>>> closestPairs = findClosestPairs(clusters);
-			AbstractMap.SimpleEntry<Set<T>, Set<T>> closestPair = closestPairs.stream()
-					.min(Comparator.comparingDouble(pair -> clusterDistance(pair.getKey(), pair.getValue())))
-					.orElseThrow();
+			// Trouver les deux clusters les plus proches
+			var closestPair = findClosestClusters(clusters);
 
-			double minDistance = clusterDistance(closestPair.getKey(), closestPair.getValue());
-			if (minDistance > threshold) break;
+			// Si la distance minimale est supérieure au seuil, arrêter l'algorithme
+			if (closestPair.getValue() > threshold) {
+				return clusters;
+			}
 
-			clusters.remove(closestPair.getKey());
-			clusters.remove(closestPair.getValue());
-
-			Set<T> union = new HashSet<>(closestPair.getKey());
-			union.addAll(closestPair.getValue());
-			clusters.add(union);
+			// Fusionner les deux clusters les plus proches
+			clusters = clusters.stream()
+					.filter(c -> !c.equals(closestPair.getKey().getKey()) && !c.equals(closestPair.getKey().getValue()))
+					.collect(Collectors.toSet());
+			Set<T> mergedCluster = new HashSet<>(closestPair.getKey().getKey());
+			mergedCluster.addAll(closestPair.getKey().getValue());
+			clusters.add(mergedCluster);
 		}
 
 		return clusters;
 	}
 
-	private double clusterDistance(Set<T> c1, Set<T> c2) {
-		return c1.stream()
-				.flatMap(e1 -> c2.stream().map(e2 -> e1.distance(e2)))
-				.min(Double::compare)
-				.orElse(Double.MAX_VALUE);
+	private AbstractMap.SimpleEntry<Map.Entry<Set<T>, Set<T>>, Double> findClosestClusters(Set<Set<T>> clusters) {
+		return clusters.stream()
+				.flatMap(c1 -> clusters.stream()
+						.filter(c2 -> !c1.equals(c2))
+						.map(c2 -> new AbstractMap.SimpleEntry<>(
+								Map.entry(c1, c2), clusterDistance(c1, c2))))
+				.min(Map.Entry.comparingByValue())
+				.orElseThrow();
 	}
 
-	private List<AbstractMap.SimpleEntry<Set<T>, Set<T>>> findClosestPairs(Set<Set<T>> clusters) {
-		List<Set<T>> clusterList = new ArrayList<>(clusters);
-		return clusterList.stream()
-				.flatMap(c1 -> clusterList.stream().filter(c2 -> c1 != c2)
-						.map(c2 -> new AbstractMap.SimpleEntry<>(c1, c2)))
-				.collect(Collectors.toList());
+	private double clusterDistance(Set<T> c1, Set<T> c2) {
+		return c1.stream()
+				.flatMap(i1 -> c2.stream().map(i2 -> i1.distance(i2)))
+				.min(Double::compare)
+				.orElse(Double.MAX_VALUE);
 	}
 }

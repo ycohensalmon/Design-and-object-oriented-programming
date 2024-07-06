@@ -4,8 +4,8 @@ import java.util.Set;
 
 // A simple validation class for agglomerative clustering. DO NOT submit this file
 public class AgglomerativeClusteringTest {
-	private static final String POINTS_PATH = "ex5/src/Datasets/points.txt";
-	private static final String BITARRAYS_PATH = "ex5/src/Datasets/bitArrays.txt";
+	private static final String POINTS_PATH = "ex5/ex5/src/Datasets/points.txt";
+	private static final String BITARRAYS_PATH = "ex5/ex5/src/Datasets/bitArrays.txt";
 
 	public static void main(String[] args) throws IOException {
 		Scanner scanner = new Scanner(System.in);
@@ -16,7 +16,7 @@ public class AgglomerativeClusteringTest {
 		scanner.nextLine();
 
 		if (className.equals("TwoDPoint")) {
-			Clustering<TwoDPoint> twoDPointClustering = new AgglomerativeClustering(threshold);
+			Clustering<TwoDPoint> twoDPointClustering = new AgglomerativeClustering<>(threshold);
 			Set<TwoDPoint> points = TwoDPoint.readClusterableSet(POINTS_PATH);
 			Set<Set<TwoDPoint>> pointsClusterSet = twoDPointClustering.clusterSet(points);
 			System.out.println("The number of 2d point clusters is: " + pointsClusterSet.size());
@@ -24,7 +24,7 @@ public class AgglomerativeClusteringTest {
 			new MyFrame(pointsClusterSet);
 		}
 		else {
-			AgglomerativeClustering<BitArray> bitArrayClustering = new AgglomerativeClustering(threshold);
+			AgglomerativeClustering<BitArray> bitArrayClustering = new AgglomerativeClustering<>(threshold);
 			Set<BitArray> bitArrays = BitArray.readClusterableSet(BITARRAYS_PATH);
 			Set<Set<BitArray>> bitArrayClusterSet = bitArrayClustering.clusterSet(bitArrays);
 			System.out.println("The number of bitArray clusters is: " + bitArrayClusterSet.size());

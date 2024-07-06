@@ -48,7 +48,7 @@ public class AgglomerativeClustering<T extends Clusterable<T>> implements Cluste
 
 	private double clusterDistance(Set<T> c1, Set<T> c2) {
 		return c1.stream()
-				.flatMap(i1 -> c2.stream().map(i2 -> i1.distance(i2)))
+				.flatMap(i1 -> c2.stream().map(i1::distance))
 				.min(Double::compare)
 				.orElse(Double.MAX_VALUE);
 	}

@@ -4,8 +4,8 @@ import java.util.Set;
 
 // A simple validation class for agglomerative clustering. DO NOT submit this file
 public class AgglomerativeClusteringTest {
-	private static final String POINTS_PATH = "ex5/ex5/src/Datasets/points.txt";
-	private static final String BITARRAYS_PATH = "ex5/ex5/src/Datasets/bitArrays.txt";
+	private static final String POINTS_PATH = "ex5/src/Datasets/points.txt";
+	private static final String BITARRAYS_PATH = "ex5/src/Datasets/bitArrays.txt";
 
 	public static void main(String[] args) throws IOException {
 		Scanner scanner = new Scanner(System.in);

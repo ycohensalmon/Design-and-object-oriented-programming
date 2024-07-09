@@ -67,7 +67,7 @@ public class Main {
         System.out.println("Choose from the following paper:\n" +
                 "ac: academic paper\n" +
                 "cn: contract\n" +
-                "pr: journal article\n" +
+                "jr: journal article\n" +
                 "bk: book");
         String p = scanner.nextLine();
         Paper paper = PaperFactory.createPaper(p);

@@ -31,7 +31,7 @@ public class VisitLongPrint implements Visitor {
 
     @Override
     public void visit(Kid kid) {
-        int age = 2023 - kid.getBirthYear();
+        int age = 2024 - kid.getBirthYear();
         System.out.print("A " + age + " year old kid with " + kid.getHairColor() + " hair. ");
     }
 }
